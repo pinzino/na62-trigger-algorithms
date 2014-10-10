@@ -35,11 +35,14 @@
 #define lowPz 10000 //MeV
 #define HighPz 45000
 
-
 //cte
 
 #define maxNhit 200
 #define strawSeparator 60
 
+#define zchamber0 -14118.5
+#define zchamber1 -3560.5
+#define zchamber2 6832.5
+#define zchamber3 21258.5
 
 #endif /* CUT_H_ */

@@ -14,13 +14,15 @@
 #include <cstdint>
 #include <iostream>
 
-namespace na62 {
+namespace na62
+    {
 
-class EventBuilder;
-class Event;
+    class EventBuilder;
+    class Event;
 
-class L1TriggerProcessor {
-public:
+    class L1TriggerProcessor
+	{
+    public:
 	/**
 	 * @param event Event* This is a pointer to the built Event containing all subevents (except those from the LKr)
 	 *
@@ -30,8 +32,7 @@ public:
 	 * 								   trigger type word should be taken from the L0TP subevent
 	 */
 	static uint16_t compute(Event* event);
-};
+	};
 
-
-} /* namespace na62 */
+    } /* namespace na62 */
 #endif /* TRIGGERPROCESSOR_H_ */

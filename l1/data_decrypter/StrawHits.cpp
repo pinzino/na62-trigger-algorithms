@@ -38,7 +38,7 @@ namespace na62
 		{
 		ncounters = (int) (data.hitCounters[nslot]);
 		triggerCombined = (uint16_t) ((triggerCoarse << 5) | (triggerFine >> 3));
-		timeTemp = ((data.strawHeader->coarseTime) + nslot)<<5;
+		timeTemp = ((data.strawHeader->coarseTime) + nslot) << 5;
 
 		if (((data.strawHeader->coarseTime) + nslot - triggerCoarse) > 0 && ((data.strawHeader->coarseTime) + nslot - triggerCoarse) < 11)
 		    {
@@ -80,16 +80,16 @@ namespace na62
     void StrawHits::SetHits(SrbHits hit, uint16_t trigger, uint16_t timeTemp)
 	{
 
-	int temp=0;
+	int temp = 0;
 	int initialNhit = nhit;
 
 	if (nhit == 0)
 	    {
-	    strawID[0] =hit.strawID;
+	    strawID[0] = hit.strawID;
 	    if ((int) hit.edge == 0) //0 leading, 1 trailing
-		leading[0] = (uint16_t) ((timeTemp | hit.fineTime)-trigger);
+		leading[0] = (uint16_t) ((timeTemp | hit.fineTime) - trigger);
 	    else
-		trailing[0] = (uint16_t) ((timeTemp | hit.fineTime)-trigger);
+		trailing[0] = (uint16_t) ((timeTemp | hit.fineTime) - trigger);
 
 	    nhit++;
 
@@ -103,9 +103,9 @@ namespace na62
 		    {
 		    temp = 1;
 		    if ((int) hit.edge == 0 && (hit.fineTime < leading[j] || leading[j] == 0)) //0 leading
-			leading[j] = (uint16_t) ((timeTemp | hit.fineTime)-trigger);
+			leading[j] = (uint16_t) ((timeTemp | hit.fineTime) - trigger);
 		    else if (hit.fineTime > trailing[j]) //1 trailing
-			trailing[j] = (uint16_t) ((timeTemp | hit.fineTime)-trigger);
+			trailing[j] = (uint16_t) ((timeTemp | hit.fineTime) - trigger);
 		    }
 		}
 	    if (temp == 0)
@@ -113,9 +113,9 @@ namespace na62
 		strawID[nhit] = (int) hit.strawID;
 
 		if ((int) hit.edge == 0)
-		    leading[nhit] = (uint16_t) ((timeTemp | hit.fineTime)-trigger);
+		    leading[nhit] = (uint16_t) ((timeTemp | hit.fineTime) - trigger);
 		else
-		    trailing[nhit] = (uint16_t) ((timeTemp | hit.fineTime)-trigger);
+		    trailing[nhit] = (uint16_t) ((timeTemp | hit.fineTime) - trigger);
 
 		nhit++;
 		}

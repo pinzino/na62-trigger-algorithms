@@ -16,37 +16,39 @@
 //class l0::MEPFragment;
 //} /* namespace na62 */
 
-namespace na62 {
+namespace na62
+    {
 
-struct SrbDataHeader {
+    struct SrbDataHeader
+	{
 	uint8_t SRBID :4;
 	uint8_t flags :4;
 	uint8_t triggerType;
 	uint16_t packetLength;
 	uint32_t coarseTime;
-}__attribute__ ((__packed__));
+	}__attribute__ ((__packed__));
 
-struct SrbHits{
+    struct SrbHits
+	{
 	uint8_t fineTime :5;
 	uint8_t edge :1;
 	uint8_t strawID :8;
 	uint8_t err :2;
-}__attribute__ ((__packed__));
+	}__attribute__ ((__packed__));
 
-class StrawData {
-public:
+    class StrawData
+	{
+    public:
 	uint nhits;
 	SrbHits* hits;
 	SrbDataHeader* strawHeader;
 	uint8_t* hitCounters;
 
 	StrawData();
-	void SetHits(l0::MEPFragment* );
+	void SetHits(l0::MEPFragment*);
 
-};
+	};
 
-}
-
-
+    }
 
 #endif /* STRAWALGORITM_H_ */

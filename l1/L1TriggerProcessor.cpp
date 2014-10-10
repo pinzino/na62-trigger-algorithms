@@ -12,12 +12,15 @@
 
 #include "data_decrypter/StrawData.h"
 #include "data_decrypter/StrawHits.h"
-#include "straw_algorithm/ViewCluster.h"
 #include "straw_algorithm/cut.h"
+#include "straw_algorithm/ViewCluster.h"
+#include "straw_algorithm/ChamberCluster.h"
 
-namespace na62 {
+namespace na62
+    {
 
-uint16_t L1TriggerProcessor::compute(Event* event) {
+    uint16_t L1TriggerProcessor::compute(Event* event)
+	{
 
 	using namespace l0;
 
@@ -33,6 +36,8 @@ uint16_t L1TriggerProcessor::compute(Event* event) {
 	ViewCluster ViewC_2[4];
 	ViewCluster ViewC_3[4];
 
+	ChamberCluster points;
+
 	uint chkmax = 0;
 	uint32_t triggerCoarse = event->getTimestamp();
 	uint8_t triggerFine = event->getFinetime();
@@ -42,57 +47,48 @@ uint16_t L1TriggerProcessor::compute(Event* event) {
 
 	l0::Subevent* strawSubevent = event->getSTRAWSubevent();
 
-	for (int srbNum = 0;
-			srbNum != strawSubevent->getNumberOfFragments() && chkmax == 0;
-			srbNum++) {
-		l0::MEPFragment* srbDataFragment = strawSubevent->getFragment(srbNum);
+	for (int srbNum = 0; srbNum != strawSubevent->getNumberOfFragments() && chkmax == 0; srbNum++)
+	    {
+	    l0::MEPFragment* srbDataFragment = strawSubevent->getFragment(srbNum);
 
-		strawPacket[srbNum].SetHits(srbDataFragment);
+	    strawPacket[srbNum].SetHits(srbDataFragment);
 
-		std::cout << "packet length = "
-				<< (int) strawPacket[srbNum].strawHeader->packetLength
-				<< " nhit in the packet = " << strawPacket[srbNum].nhits
-				<< std::endl;
-		std::cout << "coarse time = "
-				<< (int) strawPacket[srbNum].strawHeader->coarseTime
-				<< std::endl;
-		std::cout << "hit0: err= " << (int) strawPacket[srbNum].hits[0].err
-				<< " straw id= " << (int) strawPacket[srbNum].hits[0].strawID
-				<< " edge= " << (int) strawPacket[srbNum].hits[0].edge
-				<< " fine time= " << (int) strawPacket[srbNum].hits[0].fineTime
-				<< std::endl;
-		std::cout << "hit1: err= " << (int) strawPacket[srbNum].hits[1].err
-				<< " straw id= " << (int) strawPacket[srbNum].hits[1].strawID
-				<< " edge= " << (int) strawPacket[srbNum].hits[1].edge
-				<< " fine time= " << (int) strawPacket[srbNum].hits[1].fineTime
-				<< std::endl;
+	    std::cout << "packet length = " << (int) strawPacket[srbNum].strawHeader->packetLength << " nhit in the packet = " << strawPacket[srbNum].nhits << std::endl;
+	    std::cout << "coarse time = " << (int) strawPacket[srbNum].strawHeader->coarseTime << std::endl;
+	    std::cout << "hit0: err= " << (int) strawPacket[srbNum].hits[0].err << " straw id= " << (int) strawPacket[srbNum].hits[0].strawID << " edge= " << (int) strawPacket[srbNum].hits[0].edge
+		    << " fine time= " << (int) strawPacket[srbNum].hits[0].fineTime << std::endl;
+	    std::cout << "hit1: err= " << (int) strawPacket[srbNum].hits[1].err << " straw id= " << (int) strawPacket[srbNum].hits[1].strawID << " edge= " << (int) strawPacket[srbNum].hits[1].edge
+		    << " fine time= " << (int) strawPacket[srbNum].hits[1].fineTime << std::endl;
 
-		if (strawPacket[srbNum].nhits < maxNhit) {
+	    if (strawPacket[srbNum].nhits < maxNhit)
+		{
 
-			hitPlane[srbNum / 2].SetHits(strawPacket[srbNum], triggerCoarse,
-					triggerFine); //To add subtraction  with temporal shift plane position dependent, what do we do about the hits with only a leading or a trailing
+		hitPlane[srbNum / 2].SetHits(strawPacket[srbNum], triggerCoarse, triggerFine); //To add subtraction  with temporal shift plane position dependent, what do we do about the hits with only a leading or a trailing
 
-		} else
-			chkmax = 1;
+		}
+	    else
+		chkmax = 1;
 
-		if (chkmax == 0) {
+	    if (chkmax == 0)
+		{
 
-			for (int view = 0; view < 4; view++)
-				ViewC_0[view].SetCluster(hitPlane[view].halfViewZero,
-						hitPlane[view].halfViewOne);
-			for (int view = 0; view < 4; view++)
-				ViewC_1[view].SetCluster(hitPlane[view + 4].halfViewZero,
-						hitPlane[view + 4].halfViewOne);
-			for (int view = 0; view < 4; view++)
-				ViewC_2[view].SetCluster(hitPlane[view + 8].halfViewZero,
-						hitPlane[view + 8].halfViewOne);
-			for (int view = 0; view < 4; view++)
-				ViewC_3[view].SetCluster(hitPlane[view + 12].halfViewZero,
-						hitPlane[view + 12].halfViewOne);
+		for (int view = 0; view < 4; view++)
+		    ViewC_0[view].SetCluster(hitPlane[view].halfViewZero, hitPlane[view].halfViewOne);
+		for (int view = 0; view < 4; view++)
+		    ViewC_1[view].SetCluster(hitPlane[view + 4].halfViewZero, hitPlane[view + 4].halfViewOne);
+		for (int view = 0; view < 4; view++)
+		    ViewC_2[view].SetCluster(hitPlane[view + 8].halfViewZero, hitPlane[view + 8].halfViewOne);
+		for (int view = 0; view < 4; view++)
+		    ViewC_3[view].SetCluster(hitPlane[view + 12].halfViewZero, hitPlane[view + 12].halfViewOne);
+
+		points.SetCluster(ViewC_0, zchamber0);
+		points.SetCluster(ViewC_1, zchamber1);
+		points.SetCluster(ViewC_2, zchamber2);
+		points.SetCluster(ViewC_3, zchamber3);
 
 		}
 
-	}
+	    }
 
 //	long sum = 0;
 //	for (int sourceIDNum = 0;
@@ -130,6 +126,6 @@ uint16_t L1TriggerProcessor::compute(Event* event) {
 //	event->setFinetime(L0TPData->fineTime);
 	event->setProcessingID(0); // 0 indicates raw data as collected from the detector
 
-return 0;
-}
-} /* namespace na62 */
+	return 0;
+	}
+    } /* namespace na62 */
