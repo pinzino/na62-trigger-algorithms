@@ -20,6 +20,27 @@ public:
 	L1InfoToStorage();
 	~L1InfoToStorage();
 
+	uint_fast8_t getL1CHODTrgWrd();
+	void setL1CHODTrgWrd(uint_fast8_t trigger);
+
+	uint_fast8_t getL1KTAGTrgWrd();
+	void setL1KTAGTrgWrd(uint_fast8_t trigger);
+
+	uint_fast8_t getL1LAVTrgWrd();
+	void setL1LAVTrgWrd(uint_fast8_t trigger);
+
+	uint_fast8_t getL1IRCSACTrgWrd();
+	void setL1IRCSACTrgWrd(uint_fast8_t trigger);
+
+	uint_fast8_t getL1MUV3TrgWrd();
+	void setL1MUV3TrgWrd(uint_fast8_t trigger);
+
+	uint_fast8_t getL1NewCHODTrgWrd();
+	void setL1NewCHODTrgWrd(uint_fast8_t trigger);
+
+	uint_fast8_t getL1StrawTrgWrd();
+	void setL1StrawTrgWrd(uint_fast8_t trigger);
+
 	double getCHODAverageTime();
 	void setCHODAverageTime(double time);
 
@@ -28,9 +49,6 @@ public:
 
 	uint getL1CHODNHits();
 	void setL1CHODNHits(uint nHits);
-
-	uint getL1NewCHODNHits();
-	void setL1NewCHODNHits(uint nHits);
 
 	uint getL1KTAGNSectors_l0tp();
 	void setL1KTAGNSectors_l0tp(uint nSectors);
@@ -41,8 +59,23 @@ public:
 	uint getL1LAVNHits();
 	void setL1LAVNHits(uint nHits);
 
+	uint getL1IRCSACNHits();
+	void setL1IRCSACNHits(uint nHits);
+
 	uint getL1MUV3NTiles();
 	void setL1MUV3NTiles(uint nTiles);
+
+	uint getL1NewCHODNHits();
+	void setL1NewCHODNHits(uint nHits);
+
+	uint getL1StrawNTracks();
+	void setL1StrawNTracks(uint nTracks);
+
+	double getL1StrawTrack_P(uint iTrack);
+	void setL1StrawTrack_P(uint iTrack, double momentum);
+
+	double getL1StrawTrack_Vz(uint iTrackk);
+	void setL1StrawTrack_Vz(uint iTrack, double vertex);
 
 	void setL1CHODProcessed() {
 		l1CHODProcessed_ = true;
@@ -156,6 +189,34 @@ public:
 		l1LAVBadData_ = false;
 	}
 
+	void setL1IRCSACProcessed() {
+		l1IRCSACProcessed_ = true;
+	}
+	bool isL1IRCSACProcessed() const {
+		return l1IRCSACProcessed_;
+	}
+	void resetL1IRCSACProcessed() {
+		l1IRCSACProcessed_ = false;
+	}
+	void setL1IRCSACEmptyPacket() {
+		l1IRCSACEmptyPacket_ = true;
+	}
+	bool isL1IRCSACEmptyPacket() const {
+		return l1IRCSACEmptyPacket_;
+	}
+	void resetL1IRCSACEmptyPacket() {
+		l1IRCSACEmptyPacket_ = false;
+	}
+	void setL1IRCSACBadData() {
+		l1IRCSACBadData_ = true;
+	}
+	bool isL1IRCSACBadData() const {
+		return l1IRCSACBadData_;
+	}
+	void resetL1IRCSACBadData() {
+		l1IRCSACBadData_ = false;
+	}
+
 	void setL1MUV3Processed() {
 		l1MUV3Processed_ = true;
 	}
@@ -217,10 +278,19 @@ private:
 	double chodTime;
 	double newchodTime;
 
+	uint_fast8_t l1CHODTrgWrd_;
+	uint_fast8_t l1KTAGTrgWrd_;
+	uint_fast8_t l1LAVTrgWrd_;
+	uint_fast8_t l1IRCSACTrgWrd_;
+	uint_fast8_t l1MUV3TrgWrd_;
+	uint_fast8_t l1NewCHODTrgWrd_;
+	uint_fast8_t l1StrawTrgWrd_;
+
 	bool l1CHODProcessed_;
 	bool l1KTAGProcessed_;
 	bool l1LAVProcessed_;
 	bool l1StrawProcessed_;
+	bool l1IRCSACProcessed_;
 	bool l1MUV3Processed_;
 	bool l1NewCHODProcessed_;
 
@@ -228,6 +298,7 @@ private:
 	bool l1KTAGEmptyPacket_;
 	bool l1LAVEmptyPacket_;
 	bool l1StrawEmptyPacket_;
+	bool l1IRCSACEmptyPacket_;
 	bool l1MUV3EmptyPacket_;
 	bool l1NewCHODEmptyPacket_;
 
@@ -235,6 +306,7 @@ private:
 	bool l1KTAGBadData_;
 	bool l1LAVBadData_;
 	bool l1StrawBadData_;
+	bool l1IRCSACBadData_;
 	bool l1MUV3BadData_;
 	bool l1NewCHODBadData_;
 
@@ -242,8 +314,13 @@ private:
 	uint nKTAGSectors_chod;
 	uint nCHODHits;
 	uint nLAVHits;
+	uint nIRCSACHits;
 	uint nMUV3Tiles;
 	uint nNewCHODHits;
+	uint nStrawTracks;
+
+	double track_p[5];
+	double track_vz[5];
 
 };
 
