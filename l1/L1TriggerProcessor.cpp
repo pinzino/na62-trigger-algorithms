@@ -364,7 +364,7 @@ uint_fast8_t L1TriggerProcessor::compute(Event* const event) {
 				| (numberOfTriggeredL1Masks != 0);
 		L1Triggers_[l1Trigger].fetch_add(1, std::memory_order_relaxed);
 //		printf("L1TriggerProcessor.cpp: !!!!!!!! Final l1Trigger %8x\n",l1Trigger);
-		L1TriggerProcessor::writeL1Data(event, l1TriggerWords, &l1Info);
+//		L1TriggerProcessor::writeL1Data(event, l1TriggerWords, &l1Info);
 //		L1TriggerProcessor::readL1Data(event);
 		return l1Trigger;
 	}
@@ -375,7 +375,7 @@ uint_fast8_t L1TriggerProcessor::compute(Event* const event) {
 				| (numberOfTriggeredL1Masks != 0);
 		L1Triggers_[l1Trigger].fetch_add(1, std::memory_order_relaxed);
 //		printf("L1TriggerProcessor.cpp: !!!!!!!! Final l1Trigger %8x\n",l1Trigger);
-		L1TriggerProcessor::writeL1Data(event, l1TriggerWords, &l1Info);
+//		L1TriggerProcessor::writeL1Data(event, l1TriggerWords, &l1Info);
 //		L1TriggerProcessor::readL1Data(event);
 		return l1Trigger;
 	}
@@ -422,6 +422,10 @@ uint_fast8_t L1TriggerProcessor::compute(Event* const event) {
 		isL1Bypassed = 1;
 	}
 	uint_fast16_t l0TrigFlags = event->getTriggerFlags();
+
+	l0TrigFlags = 2;
+	isL0PhysicsTrigger = 1;
+
 	if (isL0PhysicsTrigger) {
 		for (int i = 0; i != 16; i++) {
 			l1TriggerWords[i] = 0;
@@ -765,7 +769,8 @@ uint_fast8_t L1TriggerProcessor::compute(Event* const event) {
 		 */
 		event->setRrequestZeroSuppressedCreamData(true);
 		event->setProcessingID(0); // 0 indicates raw data as collected from the detector
-		L1TriggerProcessor::writeL1Data(event, l1TriggerWords, &l1Info, isL1WhileTimeout);
+
+		//L1TriggerProcessor::writeL1Data(event, l1TriggerWords, &l1Info,isL1WhileTimeout);
 //		L1TriggerProcessor::readL1Data(event);
 
 	}

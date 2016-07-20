@@ -2,7 +2,7 @@
  * StrawAlgo.cpp
  *
  *  Created on: Jan 25, 2015
- *      Author: angela romano
+ *      Author: angela romano and Jacopo Pinzino
  *      Email: axr@hep.ph.bham.ac.uk 
  */
 #include "StrawAlgo.h"
@@ -84,7 +84,8 @@ double StrawAlgo::StationT0_ = InfoSTRAW_->getStationT0();
 ////////// Run 5646 - 16% Beam Intensity ///////
 //double StrawAlgo::t0_main_shift = 5992.89;
 ////////// Run 5670 - 16% Beam Intensity ///////
-double StrawAlgo::t0_main_shift = 5991.01;
+//double StrawAlgo::t0_main_shift = 5991.01;
+
 
 double StrawAlgo::cutlowleading = 0.0; //-10
 double StrawAlgo::cuthighleading = 175.0; //165
@@ -134,8 +135,8 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 
 	std::lock_guard<std::mutex> lock(strawMutex);
 
-//	printf("\nnevent = %d, raw timestamp = %u, fine timestamp = %u, ClockPeriod %lf \n", decoder.getDecodedEvent()->getEventNumber(),
-//			decoder.getDecodedEvent()->getTimestamp(), decoder.getDecodedEvent()->getFinetime(), CLOCK_PERIOD);
+	printf("\nnevent = %d, raw timestamp = %u, fine timestamp = %u, ClockPeriod %lf \n", decoder.getDecodedEvent()->getEventNumber(),
+			decoder.getDecodedEvent()->getTimestamp(), decoder.getDecodedEvent()->getFinetime(), CLOCK_PERIOD);
 
 	struct timeval time[30];
 	//gettimeofday(&time[0], 0);
@@ -154,9 +155,14 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 
 	uint nEdges_tot = 0;
 	uint nHits = 0;
+
+	int flag_l1 = 0;
+	int flag_l1_exotic = 0;
 	bool tl_flag = 0;
 	bool skip_flag = 0;
 	int nChambersHit = 0;
+
+	uint numberOfEdgesOfCurrentBoard = 0;
 
 	int ntotalhit = 0; //just for debug
 	int ntotalviewcluster = 0; //just for debug
@@ -216,6 +222,16 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 		for (int b = 0; b < rangeq; b++)
 			hought[a][b] = 0;
 
+    for (SrbFragmentDecoder* strawPacket_ : decoder.getSTRAWDecoderRange()) {
+
+            numberOfEdgesOfCurrentBoard = strawPacket_->getNumberOfEdgesStored();
+            ntotalhit += numberOfEdgesOfCurrentBoard;
+    }
+
+    if (ntotalhit > MAXNHITS)
+            flag_l1 = 1;
+
+
 	//gettimeofday(&time[1], 0);
 	//	LOG_INFO( "Preparazione Vettori - Stop " << time[1].tv_sec << " " << time[1].tv_usec );
 	//	LOG_INFO( "Preparazione Vettori " << ((time[1].tv_sec - time[0].tv_sec)*1e6 + time[1].tv_usec) - time[0].tv_usec );
@@ -246,9 +262,9 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 		const bool* edgeIsLeading = strawPacket_->getIsLeadings();
 		const uint_fast8_t* srbAddr = strawPacket_->getSrbIDs();
 
-		uint numberOfEdgesOfCurrentBoard = strawPacket_->getNumberOfEdgesStored();
+		numberOfEdgesOfCurrentBoard = strawPacket_->getNumberOfEdgesStored();
 
-		ntotalhit += numberOfEdgesOfCurrentBoard;
+		//ntotalhit += numberOfEdgesOfCurrentBoard;
 
 		//gettimeofday(&time[4], 0);
 		//		LOG_INFO( "Access Packets - Stop " << time[4].tv_sec << " " << time[4].tv_usec );
@@ -278,16 +294,16 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 			wireDistance = -100.0;
 
 			int coverAddr = ((strawAddr[iEdge] & 0xf0) >> 4);
-			//LOG_INFO( "SrbAddr " << (uint)srbAddr[iEdge] << " StrawAddr "<< (uint)strawAddr[iEdge] << " CoverAddr " << coverAddr << " fR0Mezz Index " << srbAddr[iEdge] * 16 + coverAddr );
+			LOG_INFO( "SrbAddr " << (uint)srbAddr[iEdge] << " StrawAddr "<< (uint)strawAddr[iEdge] << " CoverAddr " << coverAddr << " fR0Mezz Index " << srbAddr[iEdge] * 16 + coverAddr );
 
 			//LOG_INFO(chRO[nHits] << " " << strawGeo[chRO[nHits]]);
-			/* LOG_INFO("ChamberID " << chamberID
+			 LOG_INFO("ChamberID " << chamberID
 			 << " ViewID " << viewID
 			 << " HalfViewID " << halfviewID
 			 << " PlaneID " << planeID
 			 << " StrawID " << strawID
 			 << " IsALeading " << edgeIsLeading[iEdge]);
-			 */
+
 
 			if (edgeIsLeading[iEdge]) {
 				leading = (double) edgeTime[iEdge] + (double) StationT0_ - (double) ROMezzaninesT0_[srbAddr[iEdge] * 16 + coverAddr]
@@ -296,6 +312,7 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 //				printf("time components %lf %lf %lf %lf %lf\n", edgeTime[iEdge], StationT0_,
 //						ROMezzaninesT0_[srbAddr[iEdge] * 16 + coverAddr], (double) INVISIBLE_SHIFT,
 //						(((double) decoder.getDecodedEvent()->getFinetime() * CLOCK_PERIOD) / 256 + 0.5));
+
 			}
 			if (!edgeIsLeading[iEdge]) {
 				trailing = (double) edgeTime[iEdge] + (double) StationT0_ - (double) ROMezzaninesT0_[srbAddr[iEdge] * 16 + coverAddr]
@@ -305,10 +322,10 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 //						ROMezzaninesT0_[srbAddr[iEdge] * 16 + coverAddr], (double) INVISIBLE_SHIFT,
 //						(((double) decoder.getDecodedEvent()->getFinetime() * CLOCK_PERIOD) / 256 + 0.5));
 			}
-			/*			printf("number hit %d hit: %d %d %d %d %d %lf %lf %d %d %d\n",
+						printf("number hit %d hit: %d %d %d %d %d %lf %lf %d %d %d\n",
 			 iEdge, chamberID, viewID, halfviewID, planeID, strawID,
 			 leading, trailing, edgeIsLeading[iEdge], srbAddr[iEdge],
-			 strawAddr[iEdge]);*/
+			 strawAddr[iEdge]);
 			//gettimeofday(&time[6], 0);
 			//LOG_INFO( "Read Config File and Assign ChannelID - Stop " << time[6].tv_sec << " " << time[6].tv_usec );
 			//LOG_INFO( "Read Conf file and Assign ChannelID and time" << ((time[6].tv_sec - time[5].tv_sec)*1e6 + time[6].tv_usec) - time[5].tv_usec );
@@ -404,23 +421,24 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 	//LOG_INFO( " Preclustering " << ((time[11].tv_sec - time[9].tv_sec)*1e6 + time[11].tv_usec) - time[9].tv_usec );
 	//LOG_INFO( " End Preclustering - initial time " << ((time[11].tv_sec - time[0].tv_sec)*1e6 + time[11].tv_usec) - time[0].tv_usec );
 
-//	LOG_INFO("\n PRECLUSTER, n ="<<ntotalhit);
-//
-//	for (int i = 0; i < 4; i++) {
-//		for (int j = 0; j < 4; j++) {
-//			for (int h = 0; h < 2; h++) {
-//				printf("chamber %d view %d halfview %d : nhits = %d \n", i, j, h, nStrawPreclusters[i][j][h]);
-//				for (int k = 0; k < nStrawPreclusters[i][j][h]; k++) {
-//					strawPrecluster_[i][j][h][k].printStraw();
-//				}
-//			}
-//		}
-//	}
-
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
 			for (int h = 0; h < 2; h++) {
 				ntotalPreclusters += nStrawPreclusters[i][j][h];
+			}
+		}
+	}
+
+
+	LOG_INFO("\n PRECLUSTER, n ="<<ntotalPreclusters);
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			for (int h = 0; h < 2; h++) {
+				printf("chamber %d view %d halfview %d : nhits = %d \n", i, j, h, nStrawPreclusters[i][j][h]);
+				for (int k = 0; k < nStrawPreclusters[i][j][h]; k++) {
+					strawPrecluster_[i][j][h][k].printStraw();
+				}
 			}
 		}
 	}
@@ -873,15 +891,15 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 	//	LOG_INFO( "Clustering inside the view " << ((time[13].tv_sec - time[12].tv_sec)*1e6 + time[13].tv_usec) - time[12].tv_usec );
 	//	LOG_INFO( "Clustering inside the view fino all'inizio" << ((time[13].tv_sec - time[0].tv_sec)*1e6 + time[13].tv_usec) - time[0].tv_usec );
 
-//	printf("\n  CLUSTER OTTENUTI  \n");
-//	for (int i = 0; i < 4; i++) {
-//		for (int g = 0; g < 4; g++) {
-//			printf("  N CLUSTER camera %d vista %d = %d\n", i, g, nStrawClusters[i][g]);
-//			for (int j = 0; j < nStrawClusters[i][g]; j++) {
-//				strawCluster_[i][g][j].printCluster2();
-//			}
-//		}
-//	}
+	printf("\n  CLUSTER OTTENUTI  \n");
+	for (int i = 0; i < 4; i++) {
+		for (int g = 0; g < 4; g++) {
+			printf("  N CLUSTER camera %d vista %d = %d\n", i, g, nStrawClusters[i][g]);
+			for (int j = 0; j < nStrawClusters[i][g]; j++) {
+				strawCluster_[i][g][j].printCluster2();
+			}
+		}
+	}
 
 	/////////////////////////////////////// Start Clustering inside the chamber ///////////////////////////////////////////////////////
 	/////////////////////////////////////// 0=v, 1=u, 2=x, 3=y
@@ -1427,9 +1445,9 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 
 //	printf("DOPO SELEZIONE PUNTI\n");
 	for (int i = 0; i < 4; i++) {
-//		printf("camera: %d, n punti= %d \n", i, nStrawPointsFinal[i]);
+		printf("camera: %d, n punti= %d \n", i, nStrawPointsFinal[i]);
 		for (int j = 0; j < nStrawPointsFinal[i]; j++) {
-//			strawPointFinal_[i][j].printPoint2();
+			strawPointFinal_[i][j].printPoint2();
 			if (nStrawPointsFinal[i] > 0)
 				nChambersHit++;
 		}
@@ -2255,11 +2273,12 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 		}
 	}
 
-//	printf("\n   tracce medie: n=%d\n", ntrkintermedie);
-//	for (int e = 0; e < ntrkintermedie; e++) {
-//		printf("\n traccia: n = %d\n", e);
-//		strawTrkIntermedie_[e].printTrack();
-//	}
+	printf("\n   tracce medie: n=%d\n", ntrkintermedie);
+	for (int e = 0; e < ntrkintermedie; e++) {
+		printf("\n traccia: n = %d\n", e);
+		strawTrkIntermedie_[e].printTrack();
+	}
+
 
 	//casi a 3 tracce
 	Point mtrack1;
@@ -2285,7 +2304,7 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 		} else
 //			printf("cut: traccia %d è stata taglia via\n", e);
 
-			qtrack1.setPoint(0.0, strawTrkIntermedie_[e].q1x, strawTrkIntermedie_[e].qy, 0.0, 0.0, 0, 0);
+		qtrack1.setPoint(0.0, strawTrkIntermedie_[e].q1x, strawTrkIntermedie_[e].qy, 0.0, 0.0, 0, 0);
 		mtrack1.setPoint(1.0, strawTrkIntermedie_[e].m1x, strawTrkIntermedie_[e].my, 0.0, 0.0, 0, 0);
 
 		for (int f = e + 1; f < ntrkintermedie; f++) {
@@ -2300,7 +2319,11 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 			}
 		}
 
+<<<<<<< Updated upstream
 		if (strawTrkIntermedie_[e].m1x - strawTrkIntermedie_[e].m2x < 0)
+=======
+		if(strawTrkIntermedie_[e].m1x - strawTrkIntermedie_[e].m2x < 0)
+>>>>>>> Stashed changes
 			flag_l1_exotic = 1;
 
 		if (flag_l1_limit[e] > 0 and flag_l1_three[e] == 0)
@@ -2310,15 +2333,18 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 			flag_l1_tretracks = 1;
 	}
 
-//	LOG_INFO("\n RISULTATO:");
-//	if (flag_l1 == 1)
-//		LOG_INFO("                Evento buono \n");
-//
-//	else
-//		LOG_INFO("                Evento tagliato \n");
-//
-//	if (flag_l1_tretracks == 1)
-//		LOG_INFO("                Evento a tre traccie \n");
+	LOG_INFO("\n RISULTATO:");
+	if (flag_l1 == 1)
+		LOG_INFO("                Evento buono \n");
+
+	else
+		LOG_INFO("                Evento tagliato \n");
+
+	if (flag_l1_tretracks == 1)
+		LOG_INFO("                Evento a tre traccie \n");
+
+	if (flag_l1_exotic == 1)
+		LOG_INFO("                Evento esotico \n");
 
 	l1Info->setL1StrawNTracks(ntrkintermedie);
 	l1Info->setL1StrawProcessed();

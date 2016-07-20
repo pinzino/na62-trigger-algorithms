@@ -19,7 +19,7 @@ STRAWParsConfFile::STRAWParsConfFile() {
 
 //	LOG_INFO("In STRAW ParsConfFile");
 
-	ConfFileReader fileName_("/workspace/na62-trigger-algorithms/l1/straw_algorithm/config/Spectrometer_online.2015.conf");
+	ConfFileReader fileName_("/root/workspace/na62-trigger-algorithms/l1/straw_algorithm/config/Spectrometer_online.2015.conf");
 
 	int maxChannelID = 0;
 	int loopChannels = 0;
@@ -98,7 +98,8 @@ void STRAWParsConfFile::readT0() {
 
 //	LOG_INFO("In STRAW ParsConfFile - T0 Mezzanines file " << fileT0);
 
-	ConfFileReader fileT0_("/workspace/na62-trigger-algorithms/l1/straw_algorithm/" + fileT0);
+	ConfFileReader fileT0_(
+			"/root/workspace/na62-trigger-algorithms/l1/straw_algorithm/" + fileT0);
 
 	if (!fileT0_.isValid())
 		LOG_INFO("STRAW ROMezzanines T0 file not found");

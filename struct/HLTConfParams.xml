@@ -10,14 +10,14 @@
       <l1ReferenceTimeSourceID>0</l1ReferenceTimeSourceID>
     </l1Global>
     <l1Mask id="0">
-      <numberOfEnabledAlgos>0</numberOfEnabledAlgos>
+      <numberOfEnabledAlgos>3</numberOfEnabledAlgos>
       <numberOfFlaggedAlgos>0</numberOfFlaggedAlgos>
       <maskReductionFactor>1</maskReductionFactor>
       <ktag>
         <configParams>
           <l1TrigProcessID>0</l1TrigProcessID>
           <l1TrigMaskID>2</l1TrigMaskID>
-          <l1TrigEnable>0</l1TrigEnable>
+          <l1TrigEnable>1</l1TrigEnable>
           <l1TrigLogic>1</l1TrigLogic>
           <l1TrigFlag>0</l1TrigFlag>
           <l1TrigDownScale>0</l1TrigDownScale>
@@ -31,7 +31,7 @@
         <configParams>
           <l1TrigProcessID>1</l1TrigProcessID>
           <l1TrigMaskID>0</l1TrigMaskID>
-          <l1TrigEnable>0</l1TrigEnable>
+          <l1TrigEnable>1</l1TrigEnable>
           <l1TrigLogic>1</l1TrigLogic>
           <l1TrigFlag>0</l1TrigFlag>
           <l1TrigDownScale>0</l1TrigDownScale>
@@ -59,7 +59,7 @@
         <configParams>
           <l1TrigProcessID>2</l1TrigProcessID>
           <l1TrigMaskID>3</l1TrigMaskID>
-          <l1TrigEnable>0</l1TrigEnable>
+          <l1TrigEnable>1</l1TrigEnable>
           <l1TrigLogic>0</l1TrigLogic>
           <l1TrigFlag>0</l1TrigFlag>
           <l1TrigDownScale>0</l1TrigDownScale>
@@ -127,7 +127,7 @@
       </newchod>
     </l1Mask>
     <l1Mask id="1">
-      <numberOfEnabledAlgos>0</numberOfEnabledAlgos>
+      <numberOfEnabledAlgos>1</numberOfEnabledAlgos>
       <numberOfFlaggedAlgos>0</numberOfFlaggedAlgos>
       <maskReductionFactor>1</maskReductionFactor>
       <ktag>
@@ -202,9 +202,9 @@
       </ircsac>
       <straw>
         <configParams>
-          <l1TrigProcessID>4</l1TrigProcessID>
+          <l1TrigProcessID>0</l1TrigProcessID>
           <l1TrigMaskID>5</l1TrigMaskID>
-          <l1TrigEnable>0</l1TrigEnable>
+          <l1TrigEnable>1</l1TrigEnable>
           <l1TrigLogic>1</l1TrigLogic>
           <l1TrigFlag>0</l1TrigFlag>
           <l1TrigDownScale>0</l1TrigDownScale>

@@ -123,7 +123,7 @@ uint_fast8_t L2TriggerProcessor::compute(Event* event) {
 				| ((l2MaskFlagTrigger != 0) << 6) | (isL2Bypassed << 5)
 				| (isAllL2AlgoDisable << 4) | (numberOfTriggeredL2Masks != 0);
 		L2Triggers_[l2Trigger].fetch_add(1, std::memory_order_relaxed);
-		writeData(event, l2Trigger);
+	//	writeData(event, l2Trigger);
 		return l2Trigger;
 	}
 	if (event->isPulserGTKTriggerEvent() || event->isL2Bypassed()
@@ -133,7 +133,7 @@ uint_fast8_t L2TriggerProcessor::compute(Event* event) {
 				| ((l2MaskFlagTrigger != 0) << 6) | (isL2Bypassed << 5)
 				| (isAllL2AlgoDisable << 4) | (numberOfTriggeredL2Masks != 0);
 		L2Triggers_[l2Trigger].fetch_add(1, std::memory_order_relaxed);
-		writeData(event, l2Trigger);
+	//	writeData(event, l2Trigger);
 		return l2Trigger;
 	}
 
@@ -188,7 +188,7 @@ uint_fast8_t L2TriggerProcessor::compute(Event* event) {
 	}
 
 	L2Triggers_[l2Trigger].fetch_add(1, std::memory_order_relaxed);
-	writeData(event, l2Trigger);
+//	writeData(event, l2Trigger);
 	return l2Trigger;
 }
 
