@@ -14,14 +14,20 @@
 
 #include <sys/time.h>
 
-
 L1InfoToStorage::L1InfoToStorage() {
 //	LOG_INFO("********************In L1 InfoToStorage");
+	l1CHODTrgWrd_ = 0;
+	l1KTAGTrgWrd_ = 0;
+	l1LAVTrgWrd_ = 0;
+	l1IRCSACTrgWrd_ = 0;
+	l1MUV3TrgWrd_ = 0;
+	l1NewCHODTrgWrd_ = 0;
 	chodTime = 0.;
 	nKTAGSectors_l0tp = 0;
 	nKTAGSectors_chod = 0;
 	nCHODHits = 0;
 	nLAVHits = 0;
+	nIRCSACHits = 0;
 	nMUV3Tiles = 0;
 	l1CHODProcessed_ = false;
 	l1CHODEmptyPacket_ = false;
@@ -32,6 +38,9 @@ L1InfoToStorage::L1InfoToStorage() {
 	l1LAVProcessed_ = false;
 	l1LAVEmptyPacket_ = false;
 	l1LAVBadData_ = false;
+	l1IRCSACProcessed_ = false;
+	l1IRCSACEmptyPacket_ = false;
+	l1IRCSACBadData_ = false;
 	l1MUV3Processed_ = false;
 	l1MUV3EmptyPacket_ = false;
 	l1MUV3BadData_ = false;
@@ -41,6 +50,54 @@ L1InfoToStorage::L1InfoToStorage() {
 }
 
 L1InfoToStorage::~L1InfoToStorage() {
+}
+
+uint_fast8_t L1InfoToStorage::getL1CHODTrgWrd() {
+	return l1CHODTrgWrd_;
+}
+
+void L1InfoToStorage::setL1CHODTrgWrd(uint_fast8_t trigger) {
+	l1CHODTrgWrd_ = trigger;
+}
+
+uint_fast8_t L1InfoToStorage::getL1KTAGTrgWrd() {
+	return l1KTAGTrgWrd_;
+}
+
+void L1InfoToStorage::setL1KTAGTrgWrd(uint_fast8_t trigger) {
+	l1KTAGTrgWrd_ = trigger;
+}
+
+uint_fast8_t L1InfoToStorage::getL1LAVTrgWrd() {
+	return l1LAVTrgWrd_;
+}
+
+void L1InfoToStorage::setL1LAVTrgWrd(uint_fast8_t trigger) {
+	l1LAVTrgWrd_ = trigger;
+}
+
+uint_fast8_t L1InfoToStorage::getL1IRCSACTrgWrd() {
+	return l1IRCSACTrgWrd_;
+}
+
+void L1InfoToStorage::setL1IRCSACTrgWrd(uint_fast8_t trigger) {
+	l1IRCSACTrgWrd_ = trigger;
+}
+
+uint_fast8_t L1InfoToStorage::getL1MUV3TrgWrd() {
+	return l1MUV3TrgWrd_;
+}
+
+void L1InfoToStorage::setL1MUV3TrgWrd(uint_fast8_t trigger) {
+	l1MUV3TrgWrd_ = trigger;
+}
+
+uint_fast8_t L1InfoToStorage::getL1NewCHODTrgWrd() {
+	return l1NewCHODTrgWrd_;
+}
+
+void L1InfoToStorage::setL1NewCHODTrgWrd(uint_fast8_t trigger) {
+	l1NewCHODTrgWrd_ = trigger;
 }
 
 double L1InfoToStorage::getCHODAverageTime() {
@@ -96,6 +153,13 @@ uint L1InfoToStorage::getL1LAVNHits() {
 }
 void L1InfoToStorage::setL1LAVNHits(uint nHits) {
 	nLAVHits = nHits;
+}
+
+uint L1InfoToStorage::getL1IRCSACNHits() {
+	return nIRCSACHits;
+}
+void L1InfoToStorage::setL1IRCSACNHits(uint nHits) {
+	nIRCSACHits = nHits;
 }
 
 uint L1InfoToStorage::getL1MUV3NTiles() {
