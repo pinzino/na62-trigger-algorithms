@@ -156,8 +156,6 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 	uint nEdges_tot = 0;
 	uint nHits = 0;
 
-	int flag_l1 = 0;
-	int flag_l1_exotic = 0;
 	bool tl_flag = 0;
 	bool skip_flag = 0;
 	int nChambersHit = 0;
@@ -2319,11 +2317,7 @@ uint_fast8_t StrawAlgo::processStrawTrigger(uint l0MaskID, DecoderHandler& decod
 			}
 		}
 
-<<<<<<< Updated upstream
 		if (strawTrkIntermedie_[e].m1x - strawTrkIntermedie_[e].m2x < 0)
-=======
-		if(strawTrkIntermedie_[e].m1x - strawTrkIntermedie_[e].m2x < 0)
->>>>>>> Stashed changes
 			flag_l1_exotic = 1;
 
 		if (flag_l1_limit[e] > 0 and flag_l1_three[e] == 0)
